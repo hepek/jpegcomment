@@ -3,24 +3,25 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 struct Args {
-    /// input jpeg file
+    /// Input jpeg file
     #[clap(short, long)]
     input: String,
-    /// output file (defaults to stdout)
+    /// Output file (defaults to stdout)
     #[clap(short, long, default_value = "-")]
     output: String,
-    /// set jpeg comment
+    /// Set jpeg comment
     #[clap(short, long)]
     comment: Option<String>,
-    /// delete jpeg comment
+    /// Delete jpeg comment
     #[clap(short)]
     delete_comment: bool,
-    /// print jpeg comment
+    /// Print jpeg comment
     #[clap(short)]
     print_comment: bool,
-    /// print jpeg structure
-    #[clap(short)]
+    /// Delete all APP segments removing all image metadata
+    #[clap(short, long)]
     anonymize: bool,
+    /// Print jpeg structure
     #[clap(long)]
     dbgprint: bool,
 }
@@ -102,10 +103,10 @@ impl<'a> std::fmt::Debug for JpegElement<'a> {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         match self {
             JpegElement::Soi => fmt.write_str("Soi\n"),
-            JpegElement::Seg(nr, data) => fmt.write_str(&format!("Seg {:x} {}\n", nr, data.len())),
-            JpegElement::Comment(data) => fmt.write_str(&format!("Comment: {}\n", String::from_utf8_lossy(data))),
+            JpegElement::Seg(nr, data) => fmt.write_str(&format!("Seg 0x{:x} {}B\n", nr, data.len())),
+            JpegElement::Comment(data) => fmt.write_str(&format!("Comment: {}B\n", String::from_utf8_lossy(data))),
             JpegElement::ECS(data) => fmt.write_str(&format!("ECS: {}B\n", data.len())),
-            JpegElement::Restart(nr) => fmt.write_str(&format!("Restart {:x}\n", nr)),
+            JpegElement::Restart(nr) => fmt.write_str(&format!("Restart 0x{:x}\n", nr)),
             JpegElement::Eoi => fmt.write_str("Eoi\n"),
         }
     }
