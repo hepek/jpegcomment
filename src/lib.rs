@@ -83,6 +83,9 @@ impl<'a> Jpeg<'a> {
         let mut ecs_start = None;
 
         loop {
+            if offset >= data.len() {
+                break;
+            }
             let byte = data[offset];
             offset+=1;
             match state {

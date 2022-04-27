@@ -98,3 +98,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn test_zeros() {
+        let zeros = [0u8; 100];
+        let res = jpegcomment::Jpeg::deserialize(&zeros);
+
+        println!("{:?}", res);
+    }
+}
